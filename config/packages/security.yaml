@@ -1,5 +1,5 @@
 security:
-    encoders:
+    password_hashers:
         App\Entity\User:
             algorithm: auto
 
@@ -17,7 +17,6 @@ security:
         login:
             pattern: ^/api/login
             stateless: true
-            anonymous: true
             json_login:
                 check_path: /api/login
                 username_path: email
@@ -27,10 +26,9 @@ security:
 
         main:
             stateless: true
-            anonymous: false
-            guard:
-                authenticators:
-                    - App\Security\UserAuthenticator
+            custom_authenticators:
+                - App\Security\UserAuthenticator
+
     access_control:
         - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -5,6 +5,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
+ * @IgnoreAnnotation("ORM\Entity")
+ * @IgnoreAnnotation("ORM\Id")
+ * @IgnoreAnnotation("ORM\GeneratedValue")
+ * @IgnoreAnnotation("ORM\Column")
+ * @IgnoreAnnotation("ORM\ManyToOne")
  */
 class Review
 {
