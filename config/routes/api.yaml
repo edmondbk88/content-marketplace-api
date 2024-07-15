@@ -1,0 +1,59 @@
+api_register:
+    path: /api/register
+    controller: App\Controller\AuthController::register
+    methods: POST
+
+api_login_check:
+    path: /api/login
+    controller: App\Controller\AuthController::login
+    methods: POST
+
+api_user:
+    path: /api/user
+    controller: App\Controller\UserController::getUser
+    methods: GET
+
+api_update_user:
+    path: /api/user
+    controller: App\Controller\UserController::updateUser
+    methods: PUT
+
+api_content:
+    path: /api/content
+    controller: App\Controller\ContentController::createContent
+    methods: POST
+
+api_get_contents:
+    path: /api/content
+    controller: App\Controller\ContentController::getContents
+    methods: GET
+
+api_get_content:
+    path: /api/content/{id}
+    controller: App\Controller\ContentController::getContent
+    methods: GET
+
+api_update_content:
+    path: /api/content/{id}
+    controller: App\Controller\ContentController::updateContent
+    methods: PUT
+
+api_delete_content:
+    path: /api/content/{id}
+    controller: App\Controller\ContentController::deleteContent
+    methods: DELETE
+
+api_rate_content:
+    path: /api/content/{id}/rate
+    controller: App\Controller\MarketplaceController::rateContent
+    methods: POST
+
+api_favorite_content:
+    path: /api/content/{id}/favorite
+    controller: App\Controller\MarketplaceController::favoriteContent
+    methods: POST
+
+api_favorites:
+    path: /api/content/favorites
+    controller: App\Controller\MarketplaceController::getFavorites
+    methods: GET
