@@ -1,14 +1,15 @@
 <?php
 namespace App\Security;
 
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport; // Asegúrate de esta línea
+use Symfony\Component\Security\Http\Authenticator\Passport\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\CredentialsBadge;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class UserAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -19,7 +20,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         $this->userProvider = $userProvider;
     }
 
-    public function authenticate(Request $request): TokenInterface
+    public function authenticate(Request $request): Passport
     {
         $username = $request->request->get('username');
         $password = $request->request->get('password');
@@ -28,25 +29,28 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
             throw new AuthenticationException('Username or password cannot be empty.');
         }
 
-        $user = $this->userProvider->loadUserByIdentifier($username);
+        $userBadge = new UserBadge($username, function ($userIdentifier) {
+            return $this->userProvider->loadUserByIdentifier($userIdentifier);
+        });
 
-        if (!$user || !password_verify($password, $user->getPassword())) {
-            throw new AuthenticationException('Invalid credentials.');
-        }
+        $credentialsBadge = new CredentialsBadge($password);
 
-        return new UsernamePasswordToken($user, $password, 'main', $user->getRoles());
+        return new Passport($userBadge, $credentialsBadge);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         // Aquí deberías definir la lógica que maneja el éxito de la autenticación.
-        // Por ejemplo, redirigir al usuario a la página de inicio.
-        
         return new Response('Authentication successful!', Response::HTTP_OK);
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         return new Response('Authentication failed: ' . $exception->getMessage(), Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function getLoginUrl(Request $request): string
+    {
+        return '/login'; // Ajusta esta ruta según tu aplicación
     }
 }
